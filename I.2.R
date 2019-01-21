@@ -219,3 +219,46 @@ b[[2]][[1]] <- 10
 obj_size(b)     # b列表的1,2位都有更動,
 obj_size(a, b)  # a,b沒有共用的元素
 obj_size(a) + obj_size(b)   # obj_size(a, b) = obj_size(a) + obj_size(b)
+
+
+## 2.5 ##
+
+x <- data.frame(matrix(runif(5 * 1e4), ncol = 5))
+medians <- vapply(x, median, numeric(1))
+cat(tracemem(x), "\n")
+for (i in seq_along(medians)) {
+    x[[i]] <- x[[i]] - medians[[i]]
+}
+
+
+x <- data.frame(matrix(runif(5 * 1e4), ncol = 5))
+medians <- vapply(x, median, numeric(1))
+y <- as.list(x)
+cat(tracemem(y), "\n")
+for (i in seq_along(medians)) {
+    y[[i]] <- y[[i]] - medians[[i]]
+}
+
+
+e1 <- rlang::env(a = 1, b = 2, c = 3)
+e2 <- e1
+e1$c <- 4
+e2$c        # 並沒有copy, 而是整個environment做改動
+
+e <- rlang::env()
+e$self <- e
+ref(e)
+
+# exercise
+
+# 1
+x <- list()     # 名稱x連結到list物件
+obj_addr(x)
+x[[1]] <- x     # 產生新x, 新x的第1位與舊x一起連結到list物件, 同時舊x被刪除 
+obj_addr(x)
+obj_addr(x[[1]])# 其中第1位仍連結著list物件
+
+
+# 3
+e <- rlang::env()
+tracemem(e)
