@@ -155,3 +155,67 @@ x <- list(1:10)
 ref(x)
 x[[2]] <- x
 ref(x)
+
+
+## 2.4 ##
+
+obj_size(letters)
+obj_size(ggplot2::diamonds)
+
+x <- runif(1e6)
+obj_size(x)
+y <- list(x, x, x)
+obj_size(y)         # 只比x多80B
+obj_size(list(NULL, NULL, NULL))    # 80B為列表框架的大小
+obj_size(list(NULL, NULL))
+obj_size(list(NULL))
+
+banana <- "bananas bananas bananas"
+obj_size(banana)
+obj_size(rep(banana, 100))  
+# 因為使用global string pool, 這減少了記憶體的使用
+# 所以使用的記憶體並非原來的100倍
+
+# obj_size(x) + obj_size(y) = obj_size(x, y) 唯有在x與y沒有共用的值時成立
+obj_size(x, y)
+# 所以此處obj_size(x, y) = obj_size(y)
+
+# R 3.5.0 以後有個功能叫alternative representative
+# 在特定的向量中, 可以只存取頭尾的值
+# 因此不論多大的向量, 所用的記憶體都一樣
+# 其中":"為最常見的使用
+obj_size(1:3)
+obj_size(1:1e3)
+obj_size(1:1e6)
+obj_size(1:1e9)
+
+# exercise
+
+# 1
+y <- rep(list(runif(1e4)), 100)
+object.size(y)
+obj_size(y)
+?obj_size
+
+# 2
+funs <- list(mean, sd, var)
+obj_size(funs)          # 包含list的框架
+obj_size(mean, sd, var)
+
+# 3
+a <- runif(1e6)
+obj_size(a)
+
+b <- list(a, a)
+obj_size(b)
+obj_size(a, b)
+
+b[[1]][[1]] <- 10
+obj_size(b)     # 只有動到列表的第1位, 第2位不動, 所以約為a大小的2倍
+obj_size(a, b)  # b列表的第2位跟a是共用的
+
+
+b[[2]][[1]] <- 10
+obj_size(b)     # b列表的1,2位都有更動,
+obj_size(a, b)  # a,b沒有共用的元素
+obj_size(a) + obj_size(b)   # obj_size(a, b) = obj_size(a) + obj_size(b)
