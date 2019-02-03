@@ -23,7 +23,7 @@ typeof(int_var)
 typeof(lgl_var)
 typeof(chr_var)
 # 你可能聽過mode()跟storage.mode(), 但請避免使用他們
-# 因為他們只有在S語言(R語言前身)有兼容性
+# 他們的存在只是為了跟S語言兼容
 
 
 # 幾乎所有涉及NA的式子都會回傳NA (Not Applicable的縮寫)
@@ -90,3 +90,91 @@ typeof(c(FALSE, NA_character_))
 # except of names and if its mode() is :
 # atomic ("logical", "integer", "double", "complex", "character", "raw"), 
 # "list" or "expression"
+
+
+## 3.3 ##
+
+# matrice跟array不在atomic vector的集合裡
+# 但他們構築在atomic vector之上, 並給他加上了dim屬性
+
+# 屬性可想成name-value pair, 作為metadata與物件相連
+# 用attr()來查看或修改屬性, 或用attributes()來查看修改全部屬性
+# 用str()來設置全部屬性
+a <- 1:3
+attr(a, "x") <- "abcdef"
+attr(a, "x")
+attr(a, "y") <- 4:6
+str(attributes(a))
+# Or equivalently
+a <- structure(
+  1:3, 
+  x = "abcdef",
+  y = 4:6
+)
+structure(attributes(a))
+
+# 一般來說, 屬性是非常短命的
+# 常常隨著一些運算就消失了
+attributes(a[1])
+attributes(sum(a))
+# 只有兩種屬性較常被保存下來 : dim , name
+
+# 有三種方法可以設置name屬性
+x <- c(a = 1, b = 2, c = 3)
+
+x <- 1:3
+names(x) <- c("a", "b", "c")
+
+x <- setNames(1:3, c("a", "b", "c"))
+
+# 我們使用names()而避免attr(x, "name")
+# 因為不僅要多打字, 而且程式可讀性也降低
+
+# 移除名稱 : unname() 或 names(x) <- NULL
+
+# 為了有效的使用, names最好是唯一且非缺失值
+# 但R並沒有強迫不能有缺失的名稱
+# 不過如果每個名稱都為缺失值, 則會返回NULL
+
+
+# 藉由新增dim屬性來生成2維矩陣或多維陣列
+a <- matrix(1:6, nrow = 2, ncol = 3)
+a
+
+b <- array(1:12, c(2, 3, 2))
+b
+
+c <- 1:6
+dim(c) <- c(3, 2)
+c
+
+# 一個沒有設置dim屬性的向量常被想成1維度
+# 但事實上他的dim是NULL
+# 單列(行)矩陣或1維度陣列, 呈現上可能跟vector很像
+# 但他們的行為卻有差異
+# 可以簡單從str()上看到差別
+str(1:3)
+str(matrix(1:3, ncol = 1))
+str(matrix(1:3, nrow = 1))
+str(array(1:3, 3)) 
+
+# exercise
+# 1.
+setNames
+unname
+# 2.
+dim(c(1, 2, 3))
+nrow(c(1, 2, 3))
+?NROW  # 跟nrow功能一樣, 並且將向量視為1個行矩陣
+NROW(c(1, 2, 3))
+NCOL(c(1, 2, 3))
+# 3.
+x1 <- array(1:5, c(1, 1, 5))
+x2 <- array(1:5, c(1, 5, 1))
+x3 <- array(1:5, c(5, 1, 1))
+# 4.
+x <- structure(1:5, comment = "my attribute")
+x
+?comment     # comment屬於特殊屬性, 且不會印出來
+comment(x)
+attr(x, "comment")
