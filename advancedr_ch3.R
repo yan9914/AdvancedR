@@ -178,3 +178,50 @@ x
 ?comment     # comment屬於特殊屬性, 且不會印出來
 comment(x)
 attr(x, "comment")
+
+
+## 3.4 ##
+# class為最重要的向量屬性之一, 這是S3物件系統的基礎
+# 擁有class屬性的物件將成為S3物件
+# 這使他在generic function中的行為與普通向量有所不同
+# 4類重要的S3物件 : factor Date POSIXct difftime
+
+# factor建構在integer vector之上, 用於存取類別資料
+# 加上了2個屬性
+# class : "factor"
+# levels : 包含所有可能出現的值
+x <- factor(c("a", "b", "b", "a"))
+x
+typeof(x)
+attributes(x)
+
+# 當有些可能值沒有出現時, factor的用處之一就顯現出來了
+# 當我們tabulate一個factor, 就能計數所有的類別
+# 即使是沒出現的類別
+sex_char <- c("m", "m", "m")
+sex_factor <- factor(sex_char, levels = c("m", "f"))
+table(sex_char)
+table(sex_factor)
+
+# factors的變形 : ordered factors
+# 他的行為跟一般的factor差不多
+# 不過levels是具有大小順序的
+grade <- ordered(c("b", "b", "a", "c"), levels = c("c", "b", "a"))
+grade
+as.integer(grade)
+
+# R中很多函數會自動將character vectors轉為factors, 
+# ex : read.csv() data.frame()
+# 但這並不是太好, 因為
+# 這些函數並不懂所有可能出現的值有哪些(包含不在資料裡的)
+# 而且也不知道是否具有大小順序的意涵在levels裡
+# levels該是從理論或實驗設計得來的
+# 而不是從資料觀察出來的
+# 請使用stringsAsFactors = FALSE來阻止這種行為
+# 如果有需要, 請以自己的理論知識手動轉換character資料為factor
+
+# 須要注意, factor是建構在integer vector上
+# 請別把他們視為字串
+# 即使一些string methods會自動將factor轉換成字串
+# 有些( ex: nchar() )則會回報error
+# 所以有需要時, 請手動轉換factor為character vector
