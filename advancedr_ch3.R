@@ -225,3 +225,26 @@ as.integer(grade)
 # 即使一些string methods會自動將factor轉換成字串
 # 有些( ex: nchar() )則會回報error
 # 所以有需要時, 請手動轉換factor為character vector
+
+
+# Date建構在double vector之上
+# 只有一個屬性class : "Date"
+today <- Sys.Date()
+typeof(today)
+attributes(today)
+# 之所以是double, 是因為他紀錄從2017-01-01以來的天數
+date <- as.Date("1970-02-01")
+unclass(date)
+
+# R有兩種形式來存取日期時間格式 : POSIXct POSIXlt
+# 此處只提POSIXct, 因為較簡單
+# POSIXct用double vector儲存日期時間格式
+ct <- as.POSIXct("1970-01-01 01:00", tz = "UTC")
+ct
+typeof(ct)
+attributes(ct)
+# tzone屬性只控制表現的形式, 不改變內容
+unclass(ct)       # 紀錄從1970-01-01 00:00以來的秒數
+structure(ct, tzone = "Asia/Taipei")
+unclass(structure(ct, tzone = "Asia/Taipei"))
+
