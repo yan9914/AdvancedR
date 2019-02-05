@@ -248,3 +248,43 @@ unclass(ct)       # 紀錄從1970-01-01 00:00以來的秒數
 structure(ct, tzone = "Asia/Taipei")
 unclass(structure(ct, tzone = "Asia/Taipei"))
 
+# duration : 兩日期或兩日期時間的時間差
+# 建構在double vector之上
+# 有屬性class : "difftime" 跟 units : 單位
+one_week_1 <- as.difftime(1, units = "weeks")
+one_week_1
+typeof(one_week_1)
+attributes(one_week_1)
+unclass(one_week_1)
+
+one_week_2 <- as.difftime(7, units = "days")
+one_week_2
+typeof(one_week_2)
+attributes(one_week_2)
+
+# exercise
+# 1.
+# table為建構在integer vector上的物件
+# 具有三種屬性
+tb <- table(sample(LETTERS, 20, replace = TRUE))
+tb
+typeof(tb)
+attributes(tb)
+# 2.
+# levels被改變, 內部的integer vector不會改變
+# 所以會照著改變後的順序重排factor
+f1 <- factor(letters)
+levels(f1) <- rev(levels(f1))
+x <- factor(c("c", "c", "a", "b"))
+x
+unclass(x)
+levels(x) <- rev(levels(x))
+x
+unclass(x)
+# 3.
+f2 <- rev(factor(letters))
+f2    # 內部的integer vector被倒序了
+unclass(f2)
+f3 <- factor(letters, levels = rev(letters))
+f3    # 用倒序去解讀letters
+unclass(f3)
