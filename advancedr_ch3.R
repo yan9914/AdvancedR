@@ -288,3 +288,65 @@ unclass(f2)
 f3 <- factor(letters, levels = rev(letters))
 f3    # 用倒序去解讀letters
 unclass(f3)
+
+
+## 3.5 ##
+
+# lists又比atomic vectors更複雜一些
+# 每個元素可以是任何的type
+# 但技術上來說, 每個元素都是"reference", 也就是參照其他的物件
+l1 <- list(
+  1:3, 
+  "a", 
+  c(TRUE, FALSE, TRUE), 
+  c(2.3, 5.9)
+)
+typeof(l1)
+str(l1)
+
+# 正如2.3.3所說
+# 因為list是參照其他物件, 所以相同的元素不需要複製
+# 因此他所用的記憶體, 可能比你想的要來得少
+lobstr::obj_size(mtcars)
+l2 <- list(mtcars, mtcars, mtcars, mtcars)
+lobstr::obj_size(l2)
+
+# lists有時被稱為recursive vectors
+# 因為他的元素可以是另一個list
+# 這讓他與atomic vectors有根本上的不同
+l3 <- list(list(list(1)))
+str(l3)
+
+# 若c()裡面含有list, 他可以將他們合併成一個list
+# 回顧 : 若c()中只有atomic vectors, 將被合併成一個atomic vector
+l4 <- list(list(1, 2), list(3, 4), list(data.frame(runif(3))))
+l5 <- c(list(1, 2), c(3, 4), list(data.frame(runif(3))))
+str(l4)
+str(l5)
+
+# is.list()測試type是否為list
+# as.list()轉換成list
+# unlist()將list轉為complex vector, 但有時可能不如所願
+list(1:3)
+as.list(1:3)
+
+# 在atomic vectors裡, dim屬性常用來生成matrices
+# 而在lists也可以用來生成 list-matrices或list-arrays
+l <- list(1:3, "a", TRUE, data.frame(runif(3)))
+dim(l) <- c(2, 2)
+l
+l[[1, 1]]
+
+# exercise
+# 2. list也是向量, 即使不是atomic vector
+as.vector(list(1, 2, 3))
+as.vector(list(1, 2, 3), mode = "integer")
+# 3.
+# 記得兩者的本質是double vector
+date    <- as.Date("1970-01-02")
+dttm_ct <- as.POSIXct("1970-01-01 01:00", tz = "UTC")
+c(date, dttm_ct)  # 參考第一個元素的class
+c(dttm_ct, date)  # 因為要統一class, 導致了一些誤解
+list(date, dttm_ct) # 這樣做安全一些
+unlist(list(date, dttm_ct)) # 問題是, 做unlist屬性會消失
+
