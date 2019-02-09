@@ -398,8 +398,30 @@ data.frame(x = 1:4, y = 1:3)
 tibble(x = 1:4, y = 1)
 tibble(x = 1:4, y = 1:2)
 
-# 有別於data.frame, tibble在生成特徵時可參考前面的特徵
+# 有別於data.frame, tibble在生成變數時可參考前面的變數
 tibble(
   x = 1:3,
   y = x * 2
 )
+
+df3 <- data.frame(
+  age = c(35, 27, 18),
+  hair = c("blond", "brown", "black"),
+  row.names = c("Bob", "Susan", "Sam")
+)
+df3
+
+# row names在data frame是不可取的
+# metadata也是data, 以與其他data不同的方式存取他是個壞主意
+# row name只能是單一的字串, 
+# 若想取非字符向量或多個向量為row name來辨別資料點是不可行的
+# row names必須是唯一的, 若是複製而得的資料 (例如bootstrapping)
+# data frame將產生不一樣的row name
+# 此時要match data便須耗費一些工程
+df3[c(1, 1, 1), ]
+
+# 因此tibble不支持設置row name
+# 取而代之, rownames_to_column()可用來將row names轉存在資料裡
+# 或在as_tibble()中使用rownames變量
+rownames_to_column(df3)
+as_tibble(df3, rownames = "name")
