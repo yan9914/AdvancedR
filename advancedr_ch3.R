@@ -350,3 +350,56 @@ c(dttm_ct, date)  # 因為要統一class, 導致了一些誤解
 list(date, dttm_ct) # 這樣做安全一些
 unlist(list(date, dttm_ct)) # 問題是, 做unlist屬性會消失
 
+## 3.6 ##
+
+# data frame和tibble為建構在list上的兩個最重要的S3物件
+# data frame有屬性 : names row.names class
+df1 <- data.frame(x = 1:3, y = letters[1:3])
+typeof(df1)
+attributes(df1)
+
+# tibble為改良版的data frame
+# 一個不同之處在於他的class屬性多了"tbl_df"和"tbl"
+library(tibble)
+df2 <- tibble(x = 1:3, y = letters[1:3])
+typeof(df2)
+attributes(df2)
+
+# 生成
+df <- data.frame(
+  x = 1:3, 
+  y = c("a", "b", "c")
+)
+str(df)
+# 記得使用stringsAsFactors = FALSE, 防止character vector自動轉為factor
+df1 <- data.frame(
+  x = 1:3,
+  y = c("a", "b", "c"),
+  stringsAsFactors = FALSE
+)
+str(df1)
+# tibble不會自動將character vector轉為factor
+df2 <- tibble(
+  x = 1:3, 
+  y = c("a", "b", "c")
+)
+str(df2)
+
+# data frame自動轉換不合語法的名稱 (除非將check.names設為FALSE)
+names(data.frame(`1` = 1))
+# tibble則不 (雖然他將反引號給拿掉了)
+names(tibble(`1` = 1))
+
+# 不管是data frmae或tibble每行的個數都要一樣
+# 有不足的data frame會做循環(要為最長者的整數倍)
+data.frame(x = 1:4, y = 1:2)
+data.frame(x = 1:4, y = 1:3)
+# tibble只會對單一值做循環
+tibble(x = 1:4, y = 1)
+tibble(x = 1:4, y = 1:2)
+
+# 有別於data.frame, tibble在生成特徵時可參考前面的特徵
+tibble(
+  x = 1:3,
+  y = x * 2
+)
