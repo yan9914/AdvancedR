@@ -425,3 +425,24 @@ df3[c(1, 1, 1), ]
 # 或在as_tibble()中使用rownames變量
 rownames_to_column(df3)
 as_tibble(df3, rownames = "name")
+
+# 在data frmae取子集有2個要避免的行為
+
+# df[, vars]取行: 若vars為單一的變數則會輸出一個向量
+# 其他情況將輸出一個data frame
+# 當被使用在function中, 常常會是麻煩的源頭
+# 除非你永遠記得使用 df[, vars, drop = FALSE] 
+
+# 若你試圖用df$x取一個單行, 且不存在x這個變數
+# data frame將轉而取任何一個以x開頭的變數
+# 若再沒有, 則回傳NULL
+# 這使得有時選到錯誤的變數而不自知
+
+# 在tibble使用[]永遠回傳tibble
+# 在tibble使用df$x不會部分配對, 找不到時會發出警告
+df1 <- data.frame(xyz = "a")
+df2 <- tibble(xyz = "a")
+
+df1$x
+df2$x
+# 取單行建議使用 df[["col"]] 這在data frame與tibble皆可使用
