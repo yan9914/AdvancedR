@@ -476,3 +476,60 @@ tibble(
   x = 1:3, 
   y = list(1:2, TRUE, matrix(runif(4), nrow = 2))
 )
+
+# 只要列數符合, matrix或array也可以成為data frame的一行
+# 令人驚訝的事實, 列數的檢查是用NROW(), 而非length()
+# 如同加入列表行一樣
+# 要先生成data frame再加入, 或者用I()包住
+dfm <- data.frame(
+  x = 1:3 * 10
+)
+dfm$y <- matrix(1:9, nrow = 3)
+dfm$z <- data.frame(a = 3:1, b = letters[1:3], stringsAsFactors = FALSE)
+dfm
+str(dfm)
+# 需要注意的是, 很多函數假設data frame的所有行是由vectors構成
+
+# exercise
+# 1.
+data.frame()
+iris[FALSE, ]
+iris[, FALSE]
+iris[FALSE, FALSE]
+# 2.
+data.frame(runif(2), runif(2), row.names = c("K", "K"))
+# 3.
+df1 <- data.frame(1:2, 1:2)
+t(df1)
+t(t(df1))
+class(t(t(df1)))
+
+df2 <- data.frame(1:2, I(list("A", matrix(1:6, nrow = 3))))
+t(df2)
+t(t(df2))
+# 4.
+df_coltypes <- data.frame(a = c("a", "b"),
+                          b = c(TRUE, FALSE),
+                          c = c("TRUE", "FALSE"),
+                          d = c(1L, 0L),
+                          e = c(1.5, 2),
+                          f = c("one" = 1, "two" = 2),
+                          g = factor(c("f1", "f2")),
+                          stringsAsFactors = FALSE)
+as.matrix(df_coltypes)    # 轉為character
+data.matrix(df_coltypes)  # 轉為numeric mode
+
+## 3.7 ##
+
+# NULL有自己獨有的type
+# length 0, 沒有attributes
+typeof(NULL)
+
+length(NULL)
+
+x <- NULL
+attr(x, "y") <- 1
+
+is.null(NULL)
+
+c()
