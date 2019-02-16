@@ -1,3 +1,5 @@
+library(tibble)
+
 ## 3.1 ##
 # vectors有2類 : atomic vector & list
 # NULL扮演著類似長度為0的向量的角色
@@ -360,7 +362,7 @@ attributes(df1)
 
 # tibble為改良版的data frame
 # 一個不同之處在於他的class屬性多了"tbl_df"和"tbl"
-library(tibble)
+
 df2 <- tibble(x = 1:3, y = letters[1:3])
 typeof(df2)
 attributes(df2)
@@ -446,3 +448,31 @@ df2 <- tibble(xyz = "a")
 df1$x
 df2$x
 # 取單行建議使用 df[["col"]] 這在data frame與tibble皆可使用
+
+is.data.frame(df1)
+is.data.frame(df2)
+
+is_tibble(df1)
+is_tibble(df2)
+# coercing : as.data.frame()  as_tibble()
+
+# 因為data frame是vectors組成的列表
+# 所以是容許column為列表的
+# 這讓我們可以把跟樣本相關的物件放在同一列
+# 不管那些物件有多複雜
+df <- data.frame(x = 1:3)
+df$y <- list(1:2, TRUE, matrix(runif(4), nrow = 2))
+
+# 用data.frame()時, 要用I()包住
+data.frame(
+  x = 1:3, 
+  y = I(list(1:2, TRUE, matrix(runif(4), nrow = 2)))
+)
+?I()
+
+# 在tibble可更直接地生成列表行, 不需要I()
+# 且print出來的更整齊
+tibble(
+  x = 1:3, 
+  y = list(1:2, TRUE, matrix(runif(4), nrow = 2))
+)
