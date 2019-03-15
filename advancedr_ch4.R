@@ -41,3 +41,32 @@ z[c("a", "d")]
 y[factor("b")]
 
 # 在list中, 用[取子集回傳list, 用[[及$則回傳列表中的元素
+
+
+a <- matrix(1:9, nrow = 3)
+colnames(a) <- c("A", "B", "C")
+a[1:2, ]
+a[c(TRUE, FALSE, TRUE), c("B", "A")]
+a[0, -2]
+
+# 在matrices跟arrays中, [將結果盡可能簡化到最小維度
+# 下兩者皆是一維向量
+a[1, ]
+a[1, 1]
+
+?outer
+vals <- outer(1:5, 1:5, FUN = "paste", sep = ",")
+vals
+vals[]
+
+# 因為array是一行一行存的, 所以也能用單一的數字來取
+# 由左至右, 右上至下, 取第1,3,17個元素
+vals[c(1, 3, 17)]
+
+# 或者用矩陣取子集
+select <- matrix(ncol = 2, byrow = TRUE, c(
+  1, 1,
+  3, 1,
+  2, 4
+))
+vals[select]
