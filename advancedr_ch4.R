@@ -70,3 +70,83 @@ select <- matrix(ncol = 2, byrow = TRUE, c(
   2, 4
 ))
 vals[select]
+
+# 當用單一的index來對data frame取子集
+# 則行為像是list, 取的是行
+
+# 當用2個index來對data frame取子
+# 則行為表現如同matrix
+
+df <- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
+
+df[df$x == 2, ]
+df[c(1, 3), ]
+df[c("x", "z")]
+df[, c("x", "z")]
+
+# 注意: 當要取的是單一向量
+# 矩陣式取法會將輸出簡化為向量
+# 列表式取法則不會
+str(df["x"])
+str(df[, "x"])
+
+# 然而tibble不論何種情況都回傳tibble
+df <- tibble::tibble(x = 1:3, y = 3:1, z = letters[1:3])
+
+str(df["x"])
+str(df[, "x"])
+
+# 設定drop = FALSE保留維度
+
+a <- matrix(1:4, nrow = 2)
+str(a[1, ])
+str(a[1, , drop = FALSE])
+
+df <- data.frame(a = 1:2, b = 1:2)
+str(df[, "a"])
+str(df[, "a", drop = FALSE])
+
+# 將維度化簡常使程式缺乏沿用性
+# 使得有些情況可行, 有些情況產生bug
+
+# 而使用factor時也有drop這個變項
+# 但跟上面談的不太一樣
+z <- factor(c("a", "b"))
+z[1]
+z[1, drop = TRUE]
+
+# exercise
+# 1
+mtcars[mtcars$cyl == 4, ]
+mtcars[-(1:4), ]
+mtcars[mtcars$cyl <= 5, ]
+mtcars[mtcars$cyl %in% c(4 ,6), ]
+
+# 2
+x <- 1:5
+x[NA]
+x[NA_real_]
+typeof(NA)
+typeof(NA_real_)
+# 因為NA的type是logical所以會有循環規則
+
+# 3
+x <- outer(1:5, 1:5, FUN = "*")
+upper.tri(x)
+x[upper.tri(x)]
+
+# 4
+mtcars[1:20]
+mtcars[1:10]
+str(mtcars)  # 只有11行
+
+# 5
+diag
+
+# 6
+df <- data.frame(a = c(1, NA, 3),
+                 b = c(NA, 2, NA),
+                 c = c(1, 2, 3))
+is.na(df)
+df[is.na(df)] <- 0
+df
