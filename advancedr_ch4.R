@@ -150,3 +150,72 @@ df <- data.frame(a = c(1, NA, 3),
 is.na(df)
 df[is.na(df)] <- 0
 df
+
+## 4.3 ##
+
+# 2種取子集的運算子：[[ 與 $
+# x$y 等同於 x[["y"]]
+
+# 如果串列x是一輛載著貨物的火車
+# x[[5]]是指第5節車廂的東西
+# x[4:6]是指第4~6節車廂
+
+x <- list(1:3, "a", 4:6)
+x[1]
+x[[1]]
+
+# 因為[[只能回傳單一的項目
+# 所以[[內的必須是單一的正整數或者單一的字串
+# 如果裡面放向量 ex: x[[c(1, 2)]]
+# 則會被視為x[[1]][[2]]
+
+# 不論是atomic vectors或是lists, 當取單一項目時,
+# 使用[[而非[, 是個較為保險的好習慣
+
+
+# 當column names存在變數底下
+# 此時用$會出差錯
+var <- "cyl"
+mtcars$var  # 需用mtcars[["cyl"]]
+mtcars[[var]]
+
+# $與[[一個重要的差別是: $會做部分配對
+x <- list(abc = 1)
+x[[a]]
+x$a
+
+# 為了警告這種行為, 建議設定global option : 
+# options(warnPartialMatchDollar = TRUE)
+x$a
+
+
+# 有時index的東西不存在, 但又不希望出現error
+# 可使用purrr:pluck
+# 而purrr:chuck相同情況下則是都回傳error
+x <- list(
+  a = list(1, 2, 3),
+  b = list(3, 4, 5)
+)
+purrr::pluck(x, "a", 1)   # 類似 x[["a"]][[1]]
+purrr::pluck(x, "c", 1)
+purrr::pluck(x, "c", 1, .default = NA)
+
+
+# 另外2種取子集的方法: @, slot()
+# 他們作用於S4物件
+# @等價於$
+# slot等價於[[
+
+# exercise
+# 1
+mtcars$cyl[[3]]
+mtcars[["cyl"]][[3]]
+mtcars[3, "cyl"]
+# 2
+mod <- lm(mpg ~ wt, data = mtcars)
+
+attributes(mod)
+mod[["df.residual"]]
+
+attributes(summary(mod))
+summary((mod))$r.squared
