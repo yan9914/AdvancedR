@@ -219,3 +219,49 @@ mod[["df.residual"]]
 
 attributes(summary(mod))
 summary((mod))$r.squared
+
+
+## 4.4 ##
+
+# 向量取集與賦值
+x <- 1:5
+x[c(1, 2)] <- c(101, 102)
+x
+
+# 移除列表元素
+x <- list(a = 1, b = 2)
+x[["b"]] <- NULL
+str(x)
+
+# 空的子列表
+y <- list(a = 1, b = 2)
+y["b"] <- list(NULL)
+str(y)
+
+# 取空集在賦值時, 可有效保留原物件的結構
+mtcars[] <- lapply(mtcars, as.integer)
+is.data.frame(mtcars)
+
+mtcars <- lapply(mtcars, as.integer)
+is.data.frame(mtcars)
+
+rm(mtcars)
+## 4.5 ##
+
+# 查閱表 (字元取集)
+x <- c("m", "f", "u", "f", "f", "m", "m")
+lookup <- c(m = "Male", f = "Female", u = NA)
+lookup[x]
+unname(lookup[x])
+
+# 以grades配對
+grades <- c(1, 2, 2, 3, 1)
+info <- data.frame(
+  grade = 3:1,
+  desc = c("Excellent", "Good", "Poor"),
+  fail = c(F, F, T)
+)
+id <- match(grades, info$grade)
+id
+info[id, ]
+
