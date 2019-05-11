@@ -265,3 +265,30 @@ id <- match(grades, info$grade)
 id
 info[id, ]
 
+
+df <- data.frame(x = c(1, 2, 3, 1, 2), y = 5:1, z = letters[1:5])
+
+# 列隨機重排
+df[sample(nrow(df)), ]
+
+# 隨機挑3列
+df[sample(nrow(df),3), ]
+
+# 6重數bootstrap
+df[sample(nrow(df), 6, replace = TRUE), ]
+
+
+x <- c("b", "c", "a")
+order(x)      # 順序
+x[order(x)]   # 排序
+
+x <- c(9, 4, 5, 3, NA, NA)
+order(x)  # 一般來說缺失值會放最後
+order(x, decreasing = TRUE)  # 遞減順序也是如此
+order(x, na.last = NA)
+order(x, na.last = FALSE)    # 疑似出錯！
+
+df2 <- df[sample(nrow(df)), 3:1]
+df2
+df2[order(df2$x), ]
+df2[, order(names(df2))]
