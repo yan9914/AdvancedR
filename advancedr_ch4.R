@@ -272,7 +272,7 @@ df <- data.frame(x = c(1, 2, 3, 1, 2), y = 5:1, z = letters[1:5])
 df[sample(nrow(df)), ]
 
 # 隨機挑3列
-df[sample(nrow(df),3), ]
+df[sample(nrow(df), 3), ]
 
 # 6重數bootstrap
 df[sample(nrow(df), 6, replace = TRUE), ]
@@ -283,7 +283,7 @@ order(x)      # 順序
 x[order(x)]   # 排序
 
 x <- c(9, 4, 5, 3, NA, NA)
-order(x)  # 一般來說缺失值會放最後
+order(x)                     # 一般來說缺失值會放最後
 order(x, decreasing = TRUE)  # 遞減順序也是如此
 order(x, na.last = NA)
 order(x, na.last = FALSE)    # 疑似出錯！
@@ -292,3 +292,45 @@ df2 <- df[sample(nrow(df)), 3:1]
 df2
 df2[order(df2$x), ]
 df2[, order(names(df2))]
+
+
+# 將聚合的列展開來
+df <- data.frame(x = c(2, 4, 1), y = c(9, 11, 6), n = c(3, 5, 1))
+rep(1:nrow(df), df$n)
+df[rep(1:nrow(df), df$n), ]
+
+# 藉由行名稱從資料框移除行
+df <- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
+df$z <- NULL
+
+df <- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
+df <- df[c("x", "y")]
+
+df <- df[setdiff(names(df), "z")]   # 若只知道欲移除的行名稱
+
+# 藉由布林值篩選列
+mtcars[mtcars$gear == 5, ]
+mtcars[mtcars$gear == 5 & mtcars$cyl == 4, ]
+
+# 布林取集與指標取集在一般情況的等價關係
+x1 <- 1:10 %% 2 == 0
+x2 <- which(x1)
+
+y1 <- 1:10 %% 5 == 0
+y2 <- which(y1)
+
+# X & Y <-> intersect(x, y)
+x1 & y1
+intersect(x2, y2)
+
+# X | Y <-> union(x, y)
+x1 | y1
+union(x2, y2)
+
+# X & !Y <-> setdiff(x, y)
+x1 & !y1
+setdiff(x2, y2)
+
+# xor(X, Y) <-> setdiff(union(x, y), intersect(x, y))
+xor(x1, y1)
+setdiff(union(x2, y2), intersect(x2, y2))
